@@ -1,0 +1,260 @@
+/*
+First time? Check out the tutorial game:
+https://sprig.hackclub.com/gallery/getting_started
+
+@title: Ace_Ten_(Blackjack)
+@author: Splat
+@tags: [forever]
+@addedOn: 2024-00-00
+*/
+
+const spade = "s"
+const heart = "h"
+const diamond = "d"
+const club = "c"
+
+setLegend(
+  [ spade, bitmap`
+..000000000000..
+..0..........0..
+..0....00....0..
+..0...0000...0..
+..0...0000...0..
+..0..000000..0..
+..0.00000000.0..
+..000000000000..
+..000000000000..
+..000000000000..
+..000000000000..
+..0..0000000.0..
+..0....000...0..
+..0....00....0..
+..0...0000...0..
+..000000000000..` ]
+  [ heart, bitmap`
+..000000000000..
+..0..........0..
+..0.33....33.0..
+..0.333..333.0..
+..033333333330..
+..033333333330..
+..033333333330..
+..033333333330..
+..033333333330..
+..0.33333333.0..
+..0..333333..0..
+..0...3333...0..
+..0....33....0..
+..0..........0..
+..0..........0..
+..000000000000..` ],
+  [ diamond, bitmap`
+..000000000000..
+..0..........0..
+..0....33....0..
+..0...3333...0..
+..0...3333...0..
+..0..333333..0..
+..0.33333333.0..
+..033333333330..
+..033333333330..
+..0.33333333.0..
+..0..333333..0..
+..0...3333...0..
+..0...3333...0..
+..0....33....0..
+..0..........0..
+..000000000000..` ],
+  [ club, bitmap`
+..000000000000..
+..0...0000...0..
+..0..000000..0..
+..0..000000..0..
+..0...0000...0..
+..0.00.00.00.0..
+..000000000000..
+..000000000000..
+..000000000000..
+..000000000000..
+..0.00.00.00.0..
+..0....00....0..
+..0...0000...0..
+..0..000000..0..
+..0.00000000.0..
+..000000000000..` ],
+  [ table, bitmap`
+................
+................
+................
+................
+................
+................
+................
+LLLLLLLLLL......
+LLLLLLLLLL......
+................
+................
+................
+................
+................
+................
+................`
+]
+
+,setBackground(table)
+
+,addSprite(5, 5, spade)
+
+// Define card values based on the game rules
+const cardValues = {
+    "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10,
+    "J": 10, "Q": 10, "K": 10, "A": 11
+};
+
+// Function to generate a random card
+function generateRandomCard() {
+    const cards = Object.keys(cardValues);
+    const randomCard = cards[Math.floor(Math.random() * cards.length)];
+    return randomCard;
+}
+
+// Function to calculate the total value of a hand
+function calculateTotalValue(cards) {
+    let total = 0;
+    let hasAce = false;
+    
+    for (let card of cards) {
+        total += cardValues[card];
+        if (card === "A") {
+            hasAce = true;
+        }
+    }
+
+    // Adjust total for Aces if needed
+    if (hasAce && total > 21) {
+        total -= 10; // Change Ace value to 1 if it helps avoid busting
+    }
+
+    return total;
+}
+
+// Function to add a card sprite to the player or dealer's hand
+function addCardSpriteForPlayer(card) {
+    // Add logic to display the card sprite for the player
+}
+
+// Function to add a card sprite for the dealer's hand
+function addCardSpriteForDealer(card) {
+    // Add logic to display the card sprite for the dealer
+}
+
+onInput("h", () => {
+  // Generate a random card for the player
+  const randomCard = generateRandomCard();
+  
+  // Add the random card sprite for the player at a specific position
+  addCardSpriteForPlayer(randomCard);
+
+  // Check the total value of player's cards and handle bust or win conditions
+  const totalValue = calculateTotalValueOfPlayerCards();
+  if (totalValue > 21) {
+    // Player busts - handle game over logic here
+    gameOver();
+  } else if (totalValue === 21) {
+    // Player achieves Blackjack - handle win logic here
+    playerWins();
+  }
+});
+
+// Assuming functions generateRandomCard() and calculateTotalValueOfDealerCards() are already defined
+
+onInput("s", () => {
+    dealerTurn();
+});
+
+// Add a global variable to track if the dealer's second card is revealed
+let dealerSecondCardRevealed = false;
+
+// Modify the existing dealerTurn function
+function dealerTurn() {
+    let hasSoft17 = false;
+
+    while (calculateTotalValueOfDealerCards() < 17 || (calculateTotalValueOfDealerCards() === 17 && hasSoft17)) {
+        const randomCard = generateRandomCard();
+        addCardSpriteForDealer(randomCard);
+
+        if (randomCard.value === 11 && calculateTotalValueOfDealerCards() === 17) {
+            hasSoft17 = true;
+        }
+
+        // Check if it's time to reveal the second card
+        if (dealerSecondCardRevealed === false && calculateTotalValueOfDealerCards() >= 17) {
+            // Add logic to reveal the second card here
+            revealSecondCard();
+            // Update the flag to indicate the second card is revealed
+            dealerSecondCardRevealed = true;
+        }
+    }
+
+    const dealerTotal = calculateTotalValueOfDealerCards();
+    if (dealerTotal > 21) {
+        // Implement logic for dealer bust
+        dealerBust();
+    } else {
+        // Compare player and dealer totals to determine the winner
+        compareHands();
+    }
+}
+
+// Function to reveal the dealer's second card
+function revealSecondCard() {
+    // Implement logic to show the second card in the game
+}
+    }
+
+let insuranceOffered = false;
+let insuranceTaken = false;
+
+// Function to offer insurance to the player
+function offerInsurance() {
+    insuranceOffered = true;
+    // Display a message to the player offering insurance
+    // Implement UI to allow the player to accept or decline the insurance offer
+}
+
+// Function to handle the player taking insurance
+function takeInsurance() {
+    insuranceTaken = true;
+    // Deduct the insurance amount from the player's balance or adjust the gameplay
+    // Check if the dealer has blackjack and settle the insurance bet accordingly
+    if (dealerHasBlackjack()) {
+        settleInsuranceBet();
+    }
+}
+
+// Callback when the player chooses to take insurance
+onInput("i", () => {
+    if (insuranceOffered) {
+        takeInsurance();
+    }
+});
+
+// Function to check if the dealer has blackjack
+function dealerHasBlackjack() {
+    return calculateTotalValueOfDealerCards() === 21;
+}
+
+// Function to settle the insurance bet
+function settleInsuranceBet() {
+    // Implement logic to settle the insurance bet (e.g., return double the bet if the dealer has blackjack)
+}
+
+// Modify the existing dealerTurn function to check for insurance after the dealer's turn
+function dealerTurn() {
+    // Existing dealer turn logic here
+
+    // Check for insurance after the dealer's turn
+    if (insuranceOffered && insuranceTaken) {
+        settleInsuranceBet();
+    }
+}
