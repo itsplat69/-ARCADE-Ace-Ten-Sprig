@@ -1,0 +1,38 @@
+// Visual representation of player's hand
+function drawPlayerHand() {
+    // Assuming playerHand is an array of card objects [{ suit: 'Hearts', value: 'A' }, { suit: 'Clubs', value: '10' }, ...]
+    let playerX = 2; // X coordinate to start drawing player's hand
+    let playerY = 10; // Y coordinate to start drawing player's hand
+
+    for (let card of playerHand) {
+        let cardBitmap = getCardBitmap(card.suit, card.value); // Function to get the bitmap for the card
+        addSprite(playerX, playerY, cardBitmap);
+        playerX += 3; // Adjust X position for next card
+    }
+}
+
+// Visual representation of dealer's hand
+function drawDealerHand() {
+    // Assuming dealerHand is an array of card objects [{ suit: 'Diamonds', value: '2' }, { suit: 'Spades', value: 'K' }, ...]
+    let dealerX = 2; // X coordinate to start drawing dealer's hand
+    let dealerY = 2; // Y coordinate to start drawing dealer's hand
+
+    for (let card of dealerHand) {
+        let cardBitmap = getCardBitmap(card.suit, card.value); // Function to get the bitmap for the card
+        addSprite(dealerX, dealerY, cardBitmap);
+        dealerX += 3; // Adjust X position for next card
+    }
+}
+
+// Function to get the bitmap for a card based on its suit and value
+function getCardBitmap(suit, value) {
+    // Depending on your bitmap representation of cards, create and return the appropriate bitmap
+    // You can customize the appearance of each card based on its suit and value
+    // Example: implement different graphics for different suits and values
+    // Return the bitmap for the specific card based on its suit and value
+}
+
+// Call the functions to draw player and dealer hands during the game setup or relevant actions
+dealInitialCards(); // Trigger function to deal initial cards
+drawPlayerHand(); // Draw the player's hand on the screen
+drawDealerHand(); // Draw the dealer's hand on the screen
