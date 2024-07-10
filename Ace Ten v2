@@ -1,0 +1,146 @@
+/*
+First time? Check out the tutorial game:
+https://sprig.hackclub.com/gallery/getting_started
+
+@title: Ace_Ten_(Blackjack)
+@author: Splat
+@tags: [forever]
+@addedOn: 2024-00-00
+*/
+
+const spade = "s"
+const heart = "h"
+const diamond = "d"
+const club = "c"
+
+setLegend(
+  [ spade, bitmap`
+..000000000000..
+..0..........0..
+..0....00....0..
+..0...0000...0..
+..0...0000...0..
+..0..000000..0..
+..0.00000000.0..
+..000000000000..
+..000000000000..
+..000000000000..
+..000000000000..
+..0..0000000.0..
+..0....000...0..
+..0....00....0..
+..0...0000...0..
+..000000000000..` ]
+  [ heart, bitmap`
+..000000000000..
+..0..........0..
+..0.33....33.0..
+..0.333..333.0..
+..033333333330..
+..033333333330..
+..033333333330..
+..033333333330..
+..033333333330..
+..0.33333333.0..
+..0..333333..0..
+..0...3333...0..
+..0....33....0..
+..0..........0..
+..0..........0..
+..000000000000..` ],
+  [ diamond, bitmap`
+..000000000000..
+..0..........0..
+..0....33....0..
+..0...3333...0..
+..0...3333...0..
+..0..333333..0..
+..0.33333333.0..
+..033333333330..
+..033333333330..
+..0.33333333.0..
+..0..333333..0..
+..0...3333...0..
+..0...3333...0..
+..0....33....0..
+..0..........0..
+..000000000000..` ],
+  [ club, bitmap`
+..000000000000..
+..0...0000...0..
+..0..000000..0..
+..0..000000..0..
+..0...0000...0..
+..0.00.00.00.0..
+..000000000000..
+..000000000000..
+..000000000000..
+..000000000000..
+..0.00.00.00.0..
+..0....00....0..
+..0...0000...0..
+..0..000000..0..
+..0.00000000.0..
+..000000000000..` ],
+  [ table, bitmap`
+................
+................
+................
+................
+................
+................
+................
+LLLLLLLLLL......
+LLLLLLLLLL......
+................
+................
+................
+................
+................
+................
+................`
+]
+
+,setBackground(table)
+
+,addSprite(5, 5, spade)
+
+onInput("h", () => {
+  // Generate a random card for the player
+  const randomCard = generateRandomCard();
+  
+  // Add the random card sprite for the player at a specific position
+  addCardSpriteForPlayer(randomCard);
+
+  // Check the total value of player's cards and handle bust or win conditions
+  const totalValue = calculateTotalValueOfPlayerCards();
+  if (totalValue > 21) {
+    // Player busts - handle game over logic here
+    gameOver();
+  } else if (totalValue === 21) {
+    // Player achieves Blackjack - handle win logic here
+    playerWins();
+  }
+});
+
+// Assuming functions generateRandomCard() and calculateTotalValueOfDealerCards() are already defined
+
+onInput("s", () => {
+    dealerTurn();
+});
+
+function dealerTurn() {
+    while (calculateTotalValueOfDealerCards() < 17) {
+        const randomCard = generateRandomCard();
+        addCardSpriteForDealer(randomCard); // Function to add a card sprite for the dealer
+    }
+
+    const dealerTotal = calculateTotalValueOfDealerCards();
+    if (dealerTotal > 21) {
+        // Implement logic for dealer bust
+        dealerBust();
+    } else {
+        // Compare player and dealer totals to determine the winner
+        compareHands();
+    }
+}
