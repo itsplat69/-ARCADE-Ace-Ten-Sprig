@@ -1,0 +1,500 @@
+/*
+First time? Check out the tutorial game:
+https://sprig.hackclub.com/gallery/getting_started
+
+@title: Ace_Ten_(Blackjack)
+@author: Splat
+@tags: [forever]
+@addedOn: 2024-00-00
+*/
+
+const spade = "s"
+const heart = "h"
+const diamond = "d"
+const club = "c"
+
+// Define the card deck
+const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+const deck = [];
+
+// Visual representation of player's hand
+function drawPlayerHand() {
+    let playerX = 2; // X coordinate to start drawing player's hand
+    let playerY = 10; // Y coordinate to start drawing player's hand
+
+   function getRandomCard() {
+  let suitIndex = Math.floor(Math.random() * 4);
+  let cardValue = cards[suitIndex].splice(Math.floor(Math.random() * cards[suitIndex].length), 1)[0];
+  return [suitIndex, cardValue];
+    }
+}
+
+// Visual representation of dealer's hand
+function drawDealerHand() {
+    // Assuming dealerHand is an array of card objects [{ suit: 'Diamonds', value: '2' }, { suit: 'Spades', value: 'K' }, ...]
+    let dealerX = 2; // X coordinate to start drawing dealer's hand
+    let dealerY = 2; // Y coordinate to start drawing dealer's hand
+
+    for (let card of dealerHand) {
+        let cardBitmap = getCardBitmap(card.suit, card.value); // Function to get the bitmap for the card
+        addSprite(dealerX, dealerY, cardBitmap);
+        dealerX += 3; // Adjust X position for next card
+    }
+}
+
+// Function to get the bitmap for a card based on its suit and value
+function getCardBitmap(suit, value) {
+
+
+// Call the functions to draw player and dealer hands during the game setup or relevant actions
+dealInitialCards(); // Trigger function to deal initial cards
+drawPlayerHand(); // Draw the player's hand on the screen
+drawDealerHand(); // Draw the dealer's hand on the screen
+
+// Create the deck by combining suits and values
+for (let suit of suits) {
+    for (let value of values) {
+        deck.push({ suit: suit, value: value });
+    }
+}
+
+// Shuffle the deck function if needed
+function shuffleDeck() {
+    for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+}
+
+function resetGame() {
+    deck = [];
+    playerHand = [];
+    dealerHand = [];
+    playerTotal = 0;
+    dealerTotal = 0;
+    playerBalance = 100; // or the initial balance you want
+    // Reinitialize deck
+    for (let suit of suits) {
+        for (let value of values) {
+            deck.push({ suit: suit, value: value });
+        }
+    }
+    shuffleDeck();
+}
+  
+// Example output of the deck (52 cards)
+console.log(deck);
+
+setLegend(
+  [ spade, bitmap`
+..000000000000..
+..0..........0..
+..0....00....0..
+..0...0000...0..
+..0...0000...0..
+..0..000000..0..
+..0.00000000.0..
+..000000000000..
+..000000000000..
+..000000000000..
+..000000000000..
+..0..0000000.0..
+..0....000...0..
+..0....00....0..
+..0...0000...0..
+..000000000000..` ]
+  [ heart, bitmap`
+..000000000000..
+..0..........0..
+..0.33....33.0..
+..0.333..333.0..
+..033333333330..
+..033333333330..
+..033333333330..
+..033333333330..
+..033333333330..
+..0.33333333.0..
+..0..333333..0..
+..0...3333...0..
+..0....33....0..
+..0..........0..
+..0..........0..
+..000000000000..` ],
+  [ diamond, bitmap`
+..000000000000..
+..0..........0..
+..0....33....0..
+..0...3333...0..
+..0...3333...0..
+..0..333333..0..
+..0.33333333.0..
+..033333333330..
+..033333333330..
+..0.33333333.0..
+..0..333333..0..
+..0...3333...0..
+..0...3333...0..
+..0....33....0..
+..0..........0..
+..000000000000..` ],
+  [ club, bitmap`
+..000000000000..
+..0...0000...0..
+..0..000000..0..
+..0..000000..0..
+..0...0000...0..
+..0.00.00.00.0..
+..000000000000..
+..000000000000..
+..000000000000..
+..000000000000..
+..0.00.00.00.0..
+..0....00....0..
+..0...0000...0..
+..0..000000..0..
+..0.00000000.0..
+..000000000000..` ],
+  [ table, bitmap`
+................
+................
+................
+................
+................
+................
+................
+LLLLLLLLLL......
+LLLLLLLLLL......
+................
+................
+................
+................
+................
+................
+................`
+]
+
+,setBackground(table)
+
+,addSprite(5, 5, spade)
+
+// Define game rules and card values
+const CARD_VALUES = {
+    "2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "10": 10,
+    "J": 10, "Q": 10, "K": 10, "A": 11
+};
+
+let playerHand = [];
+let dealerHand = [];
+let playerTotal = 0;
+let dealerTotal = 0;
+
+let playerBalance = 100; // Initial balance for the player
+
+// Function to place a bet
+function placeBet(amount) {
+    if (amount <= playerBalance) {
+        // Valid bet amount, deduct from balance
+        playerBalance -= amount;
+        console.log(`Bet placed: ${amount}`);
+        console.log(`Remaining balance: ${playerBalance}`);
+        // Proceed with game logic here
+    } else {
+        console.log("Insufficient balance to place the bet.");
+    }
+}
+
+// Function to update player's balance based on game outcome
+function updateBalance(outcome) {
+    switch (outcome) {
+        case "win":
+            playerBalance += 2 * betAmount; // Win doubles the bet amount
+            break;
+        case "blackjack":
+            playerBalance += 2.5 * betAmount; // Blackjack pays 3:2
+            break;
+        // Handle other outcome cases like push, loss, etc. by keeping the bet amount
+        default:
+            playerBalance += betAmount; 
+    }
+}
+
+function handTotal(hand) {
+    let total = 0;
+    let aceCount = 0;
+    
+    for (let card of hand) {
+        total += CARD_VALUES[card.value];
+        if (card.value === "A") aceCount++;
+    }
+    
+    while (total > 21 && aceCount > 0) {
+        total -= 10;
+        aceCount--;
+    }
+    
+    return total;
+}
+  
+onInput("j", () => {
+  if (!initialDrawDone && !gameOver) {
+    resetGame();
+    playTune(creditSfx);
+    creditToBet(1);
+  }
+});
+
+// Draw initial cards
+onInput("l", () => {
+  if (gameOver) {
+    resetGame();
+  } else if (!initialDrawDone) {
+    playerHand.push(getRandomCard());
+    dealerHand.push(getRandomCard());
+    playerHand.push(getRandomCard());
+    dealerHand.push(getRandomCard());
+    playTune(drawSfx);
+
+    displayDealerCards(false);
+    displayPlayerCards();
+    initialDrawDone = true;
+
+    if (handTotal(playerHand) === 21) {
+      displayDealerCards(true);
+      playerWin(true);
+    }
+  } else if (!gameOver) {
+    playerHand.push(getRandomCard());
+    displayPlayerCards();
+    playTune(hitSfx);
+
+    if (handTotal(playerHand) > 21) {
+      displayDealerCards(true);
+      dealerWin();
+    } else if (handTotal(playerHand) === 21) {
+      displayDealerCards(true);
+      if (handTotal(dealerHand) === 21) {
+        pushGame();
+      } else {
+        playerWin(true);
+      }
+    }
+  }
+});
+
+// Stand and let dealer play
+onInput("k", () => {
+  if (initialDrawDone) {
+    dealerTurn();
+  }
+});
+
+// Double down
+onInput("d", () => {
+  if (initialDrawDone && playerHand.length === 2) {
+    addText("Double down!", { x: 0, y: 13, color: color`0` });
+    creditToBet(bet); // Double bet
+    playerHand.push(getRandomCard()); // Draw one more card
+    displayPlayerCards();
+
+    if (handTotal(playerHand) > 21) {
+      displayDealerCards(true);
+      dealerWin();
+    } else if (handTotal(playerHand) === 21) {
+      displayDealerCards(true);
+      playerWin(true);
+    } else {
+      dealerTurn(); // Otherwise check for dealer cards
+    }
+  }
+});
+
+// Function to check for bust (total value exceeding 21)
+function checkForBust(totalValue) {
+    return totalValue > 21;
+}
+
+// Example usage of the bust check function
+const playerTotal = 22; // Assume player's total value
+if (checkForBust(playerTotal)) {
+    console.log("Player has busted!"); // Handle bust outcome
+    // Implement actions for bust, such as ending the game or resetting the hand
+}
+
+// Function to calculate the total value of a hand with Ace handling
+function calculateTotal(hand) {
+    let total = 0;
+    let hasAce = false;
+    
+    for (let card of hand) {
+        total += CARD_VALUES[card];
+
+// Function to generate a random card
+function generateRandomCard() {
+    const cards = Object.keys(cardValues);
+    const randomCard = cards[Math.floor(Math.random() * cards.length)];
+    return randomCard;
+}
+
+// Function to calculate the total value of a hand
+function calculateTotalValue(cards) {
+    let total = 0;
+    let hasAce = false;
+    
+    for (let card of cards) {
+        total += cardValues[card];
+        if (card === "A") {
+            hasAce = true;
+        }
+    }
+
+    // Adjust total for Aces if needed
+    if (hasAce && total > 21) {
+        total -= 10; // Change Ace value to 1 if it helps avoid busting
+    }
+
+    return total;
+}
+
+// Function to add a card sprite to the player or dealer's hand
+function addCardSpriteForPlayer(card) {
+    // Add logic to display the card sprite for the player
+}
+
+// Function to add a card sprite for the dealer's hand
+function addCardSpriteForDealer(card) {
+    // Add logic to display the card sprite for the dealer
+}
+
+onInput("h", () => {
+  // Generate a random card for the player
+  const randomCard = generateRandomCard();
+  
+  // Add the random card sprite for the player at a specific position
+  addCardSpriteForPlayer(randomCard);
+
+  // Check the total value of player's cards and handle bust or win conditions
+  const totalValue = calculateTotalValueOfPlayerCards();
+  if (totalValue > 21) {
+    // Player busts - handle game over logic here
+    gameOver();
+  } else if (totalValue === 21) {
+    // Player achieves Blackjack - handle win logic here
+    playerWins();
+  }
+});
+
+      // Define the stand function
+function stand() {
+    // Implement logic for the player standing
+    dealerTurn(); // Start the dealer's turn
+}
+
+// Handle player input for standing
+onInput("s", () => {
+    stand(); // Call the stand function when the player inputs "s"
+});
+
+// Assuming functions generateRandomCard() and calculateTotalValueOfDealerCards() are already defined
+
+onInput("s", () => {
+    dealerTurn();
+});
+
+// Add a global variable to track if the dealer's second card is revealed
+let dealerSecondCardRevealed = false;
+
+// Modify the existing dealerTurn function
+function dealerTurn() {
+    let hasSoft17 = false;
+
+    while (calculateTotalValueOfDealerCards() < 17 || (calculateTotalValueOfDealerCards() === 17 && hasSoft17)) {
+        const randomCard = generateRandomCard();
+        addCardSpriteForDealer(randomCard);
+
+        if (randomCard.value === 11 && calculateTotalValueOfDealerCards() === 17) {
+            hasSoft17 = true;
+        }
+
+        if (dealerSecondCardRevealed === false && calculateTotalValueOfDealerCards() >= 17) {
+            // Add logic to reveal the second card here
+            revealSecondCard();
+            // Update the flag to indicate the second card is revealed
+            dealerSecondCardRevealed = true;
+        }
+    }
+
+    const dealerTotal = calculateTotalValueOfDealerCards();
+    if (dealerTotal > 21) {
+        // Implement logic for dealer bust
+        dealerBust();
+    } else {
+        // Compare player and dealer totals to determine the winner
+        compareHands();
+    }
+}
+
+// Function to reveal the dealer's second card
+function revealSecondCard() {
+    // Implement logic to show the second card in the game
+}
+    }
+
+  
+  function dealerTurn() {
+  let playerTotal = handTotal(playerHand);
+  while (handTotal(dealerHand) <= 16 && dealerHand.length < 5) {
+    dealerHand.push(getRandomCard());
+    displayDealerCards(true);
+    if (handTotal(dealerHand) > 21) {
+      playerWin();
+      return;
+    }
+  }
+
+  let dealerTotal = handTotal(dealerHand);
+  if (dealerTotal > 21) {
+    playerWin();
+  } else if (dealerTotal > playerTotal) {
+    dealerWin();
+  } else if (dealerTotal === playerTotal) {
+    pushGame();
+  } else {
+    playerWin();
+  }
+}
+
+  function displayDealerCards(end) {
+  for (let i = 0; i < dealerHand.length; i++) {
+    if (!end && i === dealerHand.length - 1) {
+      addSprite(i * 2 + 1, 2, faceDown); // Hide last card if not finished
+    } else {
+      addSprite(i * 2 + 1, 2, numToSuit(dealerHand[i][0]));
+      addText(`${dealerHand[i][1]}`, { y: 5, x: i * 4 });
+    }
+  }
+}
+
+function displayPlayerCards() {
+  for (let i = 0; i < playerHand.length; i++) {
+    addSprite(i * 2 + 1, 4, numToSuit(playerHand[i][0]));
+    addText(`${playerHand[i][1]}`, { y: 9, x: i * 4 });
+  }
+}
+
+  function resetGame() {
+  gameOver = false;
+  clearText();
+  cards = [backupDeck.slice(), backupDeck.slice(), backupDeck.slice(), backupDeck.slice()];
+  playerHand = [];
+  dealerHand = [];
+  for (let i = 0; i < width(); i++) {
+    clearTile(i, 2);
+    clearTile(i, 4);
+  }
+  addText("Dealer's hand", { x: 3, y: 2, color: color`0` });
+  addText("Your hand", { x: 3, y: 7, color: color`0` });
+  addText("Total bet: " + bet, { x: 0, y: 0, color: color`0` });
+  addText("Total credits: " + credits, { x: 0, y: 15, color: color`0` });
+}
